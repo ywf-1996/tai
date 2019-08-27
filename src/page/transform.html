@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>transform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .demo {
+            width: 100px;
+            height: 100px;
+            background-color: deeppink;
+            /* transform: translateX(100px) scale(2); */
+        }
+
+        .demo2 {
+            width: 100px;
+            height: 100px;
+            background-color: teal;
+            transform: scale(2) translateX(100px);
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="demo"></div>
+    <div class="demo2"></div>
+
+    <script>
+    
+        /*
+            css(node, 'translateX')
+            css(node, 'translateX', 100)
+            css(node, 'translateY', 200)
+            css(node, 'scale', 2)
+            css(node, 'rotate', 45)
+        */
+
+        var demo = document.querySelector('.demo')
+
+        console.log('------- get --------')
+        console.log(css(demo, 'translateX'))
+        console.log(css(demo, 'translateY'))
+        console.log(css(demo, 'scale'))
+        console.log(css(demo, 'rotate'))
+
+        console.log('------- set --------')
+        css(demo, 'scale', 2)
+        css(demo, 'translateX', 100)
+
+        console.log('------- get --------')
+        console.log(css(demo, 'translateX'))
+        console.log(css(demo, 'translateY'))
+        console.log(css(demo, 'scale'))
+        console.log(css(demo, 'rotate'))
+
+
+    </script>
+
+</body>
+</html>
