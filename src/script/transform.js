@@ -52,6 +52,4 @@ const css = function(node, action, val) {
 }
 
 
-export default {
-    css
-}
+export default {css}

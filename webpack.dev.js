@@ -21,7 +21,7 @@ module.exports = WebpackMerge(baseConfig, {
     devServer: {
         hot: true,
         open: true,
-        host: '127.0.0.1',
+        host: '192.168.1.102',
         port: 10086,
         progress: true,
         contentBase: "src"
@@ -32,6 +32,10 @@ module.exports = WebpackMerge(baseConfig, {
             {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader']
+            },
+            {
+                test: /\.less$/,
+                use: ['style-loader', 'css-loader', 'less-loader']
             }
         ]
     },

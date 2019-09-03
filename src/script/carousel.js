@@ -56,7 +56,6 @@ function Carousel(imgUrls) {
 
         var startx = 0
         var elemx = 0
-        var disx = 0
         var index = 0
         //
         carouselWrap.addEventListener('touchstart', function(e) {
@@ -94,7 +93,7 @@ function Carousel(imgUrls) {
             }
             toCurPoint(index)
             damu.css(ulNode, 'translateX', index * w)
-            ulNode.style.transition = '.8s transform'
+            ulNode.style.transition = '.6s transform'
             if (needAuto !== null) {
                 auto()
             }
@@ -128,7 +127,7 @@ function Carousel(imgUrls) {
                 setTimeout(function() {
                     index--
                     toCurPoint(index)
-                    ulNode.style.transition = '.8s transform'
+                    ulNode.style.transition = '.6s transform'
                     damu.css(ulNode, 'translateX', index * w)
                 }, 50)
             }, 3000)
