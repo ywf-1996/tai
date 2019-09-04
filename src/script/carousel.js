@@ -35,7 +35,7 @@ function Carousel(imgUrls) {
         setTimeout(function() {
             // debugger
             carouselWrap.style.height = imgNode.offsetHeight + 'px'
-        }, 50)
+        }, 100)
 
         //
         
@@ -55,13 +55,21 @@ function Carousel(imgUrls) {
 
 
         var startx = 0
+        var starty = 0
         var elemx = 0
         var index = 0
+        var disx = 0
+        var disy = 0
+        var isX = true
+        var isFirst = true
         //
         carouselWrap.addEventListener('touchstart', function(e) {
+            isX = true
+            isFirst = true
             clearInterval(timer)
             ulNode.style.transition = 'none'
             startx = e.changedTouches[0].clientX
+            starty = e.changedTouches[0].clientY
 
             if (needCarousel !== null) {
                 // 1.1 -> 2.1, 2.n -> 1.n
@@ -78,7 +86,22 @@ function Carousel(imgUrls) {
         })
 
         carouselWrap.addEventListener('touchmove', function(e) {
+
+            if (!isX) {
+                return
+            }
+
             disx = e.changedTouches[0].clientX - startx
+            disy = e.changedTouches[0].clientY - starty
+
+            if (isFirst) {
+                isFirst = false
+                if (Math.abs(disx) < Math.abs(disy)) {
+                    isX = false
+                    return
+                }
+            }
+
             damu.css(ulNode, 'translateX', elemx + disx)
         })
 

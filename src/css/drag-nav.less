@@ -1,0 +1,42 @@
+@import './one-px.less';
+
+@rem: 1080/16rem;
+
+.nav {
+    .one-px(bottom);
+    overflow: hidden;
+    box-sizing: border-box;
+    height: 177/@rem;
+    padding: 28/@rem 0;
+    background-color: #fff;
+    
+    .list {
+        // 举出隐藏
+        overflow: hidden;
+        // 元素宽度由子元素撑开
+        float: left;
+        // 外: 块元素, 内: 行内或行内块
+        white-space: nowrap;
+        // 行内元素或行内块元素间隔
+        font-size: 0;
+        padding: 0 16/@rem;
+
+        li {
+            display: inline-block;
+            a {
+                display: block;
+                height: 129/@rem;
+                line-height: 129/@rem;
+                padding: 0 38/@rem;
+                border-radius: 8/@rem;
+                color: #020202;
+                font-size: 48/@rem;
+
+                &.active {
+                    background-color: #690;
+                    color: #fff;
+                }
+            }
+        }
+    }
+}

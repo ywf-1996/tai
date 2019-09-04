@@ -1,7 +1,15 @@
 
+// CSS
+import '../css/common.css'
+
+// LESS
 import '../css/tai.less'
-// import '../css/carousel.css'
-// import Carousel from './carousel.js'
+import '../css/drag-nav.less'
+import '../css/carousel.less'
+
+// JS
+import DragNav from './drag-nav'
+import Carousel from './carousel'
 import damu from './transform'
 
 let doc = document
@@ -71,123 +79,133 @@ doc.addEventListener('touchstart', () => {
 })
 
 
-
 // nav
 var nav = doc.querySelector('.nav')
 var item = doc.querySelector('.nav .list')
+DragNav(nav, item)
 
-var startx = 0
-var elemx = 0
-var disx = 0
-var minx = w - item.offsetWidth
+// carousel
+var imgUrls = ['img/1.jpg', 'img/2.jpg', 'img/3.jpg', 'img/4.jpg', 'img/5.jpg', ]
+Carousel(imgUrls)
 
-// 快速滑屏
-var nowTime = 0
-var nowPoint = 0
-var lastTime = 0
-var lastPoint = 0
-// 避免一上来用户就点击, 时间差为0（分子为0）
-var deltaTime = 1
-var deltaDis = 0
+// tap
+let jump = (content, dis) => {
 
-nav.addEventListener('touchstart', (e) => {
-    item.style.transition = 'none'
-    startx = e.changedTouches[0].clientX
-    elemx = damu.css(item, 'translateX')
+    if (Math.abs(dis.x) > tabWidth/2) {
+        content.isJumped = true
 
-    lastTime = new Date().getTime()
-    lastPoint = elemx
-    // 清除上一次的快速滑屏的位移差
-    deltaDis = 0
-})
+        // 判断方向
+        content.now = dis.x < 0 ? ++content.now : --content.now
+        // 判断是否越界
+        if (content.now > content.aNodes.length-1) {
+            content.now = 0
+        } else if (content.now < 0) {
+            content.now = content.aNodes.length-1
+        }
+        if (content.aNodes[content.now].offsetWidth != content.gMask.offsetWidth) {
+            content.gMask.style.width = content.aNodes[content.now].offsetWidth + 'px'
+            console.log('变了变了...')
+        }
+        damu.css(content.gMask, 'translateX', content.aNodes[content.now].offsetLeft)
 
-nav.addEventListener('touchmove', (e) => {
+        content.style.transition = '.8s transform'
+        var targetx = dis.x > 0 ? 0 : -2*tabWidth
+        damu.css(content, 'translateX', targetx)
 
-    disx = e.changedTouches[0].clientX - startx
-    var translatex = elemx + disx
+        content.addEventListener('transitionend', fn)
+        function fn() {
+            // 只执行一次
+            content.removeEventListener('transitionend', fn)
 
-    nowTime = new Date().getTime()
-    nowPoint = translatex
-    deltaTime = nowTime - lastTime
-    deltaDis = nowPoint - lastPoint
-    lastTime = nowTime
-    lastPoint = nowPoint
+            for (var x = 0; x < content.loadings.length; x++) {
+                content.loadings[x].style.opacity = 1
+            }
 
-    /* 
-        橡皮筋效果 - 两端往内
-            在move的过程中，每一次touchmove的有效距离慢慢变小，元素的滑动距离还在变大
-            move事件:
-                移动端: 每隔1px就触发一次
-                pc端: 每隔n毫秒触发一次
-    */
-    if (translatex > 0) {
-        item.isOutOfRange = true
-        // translatex = 0
-        // var scale = 1 - (disx / w) * 0.5 // 当 disx 大于 w 时, 出现负数
-        var scale = w / ((w + disx) * 0.8)
-        // translatex = elemx + disx * scale
-        translatex = damu.css(item, 'translateX') + deltaDis * scale
-    } else if (translatex < minx) {
-        item.isOutOfRange = true
-        // translatex = minx
-        var over = minx - translatex
-        var scale = w / ((w + over) * 0.8)
-        // translatex = elemx + disx * scale
-        translatex = damu.css(item, 'translateX') + deltaDis * scale
+            setTimeout(() => {
+                content.isJumped = false
+
+                content.style.transition = 'none'
+                damu.css(content, 'translateX', -tabWidth)
+
+                for (var x = 0; x < content.loadings.length; x++) {
+                    content.loadings[x].style.opacity = 0
+                }
+
+                console.log(new Date())
+            }, 3000)
+
+        }
     }
-    damu.css(item, 'translateX', translatex)
+}
 
-})
+let move = (content) => {
+    content.loadings = content.querySelectorAll('.tab-loading')
+    content.gMask = content.parentNode.querySelector('.tab-nav .g-mask')
+    content.aNodes = content.parentNode.querySelectorAll('.tab-nav a')
+    content.gMask.style.width = content.aNodes[0].offsetWidth + 'px'
+    // 调整内容位置
+    damu.css(content, 'translateX', -tabWidth)
+    content.isJumped = false
 
-nav.addEventListener('touchend', (e) => {
+    var elemx = 0
+    var start = {x: 0, y: 0}
+    var dis = {x: 0, y: 0}
+    var isFirst = true
+    var isX = true
 
-    var translatex = damu.css(item, 'translateX')
-
-    if (item.isOutOfRange) {
-        // 超过了内容的两边
-        item.style.transition = '.8s transform'
-
-        if (translatex > 0) {
-            translatex = 0
-            damu.css(item, 'translateX', translatex)
-        } else if (translatex < minx) {
-            translatex = minx
-            damu.css(item, 'translateX', translatex)
+    content.addEventListener('touchstart', function(e) {
+        if(content.isJumped) {
+            return
         }
 
-        item.isOutOfRange = !item.isOutOfRange
+        content.style.transition = 'none'
+        start.x = e.changedTouches[0].clientX
+        start.y = e.changedTouches[0].clientY
+        elemx = damu.css(content, 'translateX')
+        isFirst = true
+        isX = true
+    })
 
-    } else {
-        // console.log(deltaDis, deltaTime)
-
-        // 速度越大，位移越大
-        var speed = deltaDis / deltaTime
-        speed = Math.abs(speed) < 0.3 ? 0 : speed
-        // console.log("speed: " + speed)
-
-        var time = Math.abs(speed) * 0.2
-        time = time < 0.6 ? 0.6 : time
-        time = time > 1.2 ? 1.2 : time
-        // console.log("time: " + time)
-
-        translatex = translatex + speed * 400
-
-        var bezier = ''
-        if (translatex > 0) {
-            translatex = 0
-            bezier = 'cubic-bezier(0,1.33,.39,1.57)'
-        } else if (translatex < minx) {
-            translatex = minx
-            bezier = 'cubic-bezier(0,1.33,.39,1.57)'
+    content.addEventListener('touchmove', function(e) {
+        if (content.isJumped || !isX) {
+            return 
         }
 
-        item.style.transition = time + 's ' + bezier + ' transform'
+        dis.x = e.changedTouches[0].clientX - start.x
+        dis.y = e.changedTouches[0].clientY - start.y
+
+        if (isFirst) {
+            isFirst = false
+            if (Math.abs(dis.x) < Math.abs(dis.y)) {
+                isX = false
+                return
+            }
+        }
+
+        var translatex = elemx + dis.x
+        damu.css(content, 'translateX', translatex)
+
+        jump(content, dis)
+    })
+
+    content.addEventListener('touchend', function(e) {
+        if(content.isJumped) {
+            return
+        }
         
-        damu.css(item, 'translateX', translatex)
-    }
-    
-})
+        // // 判断是否满足移动的条件, 超过一半才移动
+        if (Math.abs(dis.x) <= tabWidth/2) {
+            content.style.transition = '.8s transform'
+            damu.css(content, 'translateX', -tabWidth)
+        }
+    })
+}
 
-
-// var imgUrls = ['img/01.jpg', 'img/02.jpg', 'img/03.jpg', 'img/04.jpg', 'img/05.jpg', ]
-// Carousel(imgUrls)
+var tabWrap = doc.querySelector('.tab-wrap')
+var tabWidth = tabWrap.offsetWidth
+// content既是滑屏区域，又是滑屏元素
+var contentNodes = doc.querySelectorAll('.tab-wrap .tab-content')
+for (var x = 0; x < contentNodes.length; x++) {
+    contentNodes[x].now = 0
+    move(contentNodes[x])
+}

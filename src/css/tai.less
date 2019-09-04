@@ -1,23 +1,4 @@
-html, body, ul, li, p, h1, a, form, input {
-    margin: 0;
-    padding: 0;
-}
-ul, li {
-    list-style: none;
-}
-img {
-    display: block;
-}
-a {
-    display: block;
-    text-decoration: none;
-}
-a, input, button {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    -webkit-appearance: none;
-    outline: none;
-    border: none;
-}
+
 
 html, body {
     overflow: hidden;
@@ -25,6 +6,7 @@ html, body {
 }
 
 @import './one-px.less';
+@import './clearfix.less';
 // 每个rem所包含的物理像素的个数
 @rem: 1080/16rem;
 
@@ -173,50 +155,134 @@ html, body {
         bottom: 0;
         left: 0;
         
-        .nav {
-            .one-px(bottom);
-            overflow: hidden;
-            box-sizing: border-box;
-            height: 177/@rem;
-            padding: 28/@rem 0;
+        .tab-wrap {
+            width: 1046/@rem;
+            margin: 0 auto;
             background-color: #fff;
-            
-            .list {
-                // 举出隐藏
+            overflow: hidden;
+
+            .tab-head {
+                height: 135/@rem;
+                line-height: 135/@rem;
+                font-size: 40/@rem;
+
+                h2 {
+                    float: left;
+                }
+
+                span {
+                    float: right;
+                }
+            }
+
+            .tab-nav {
                 overflow: hidden;
-                // 元素宽度由子元素撑开
-                float: left;
-                // 外: 块元素, 内: 行内或行内块
-                white-space: nowrap;
-                // 行内元素或行内块元素间隔
-                font-size: 0;
-                padding: 0 16/@rem;
+                position: relative;
+                height: 105/@rem;
+                padding: 0 8/@rem;
+                line-height: 105/@rem;
 
-                li {
-                    display: inline-block;
-                    a {
-                        display: block;
-                        height: 129/@rem;
-                        line-height: 129/@rem;
-                        padding: 0 38/@rem;
-                        border-radius: 8/@rem;
-                        color: #020202;
-                        font-size: 48/@rem;
+                a {
+                    float: left;
+                    margin-right: 40/@rem;
+                    height: 105/@rem;
+                    color: #6b6b6b;
+                    font-size: 44/@rem;
+                }
 
-                        &.active {
-                            background-color: #690;
-                            color: #fff;
+                .g-mask {
+                    position: absolute;
+                    left: 8/@rem;
+                    bottom: 0;
+                    width: 0;
+                    height: 9/@rem;
+                    background-color: #6f900d;
+                    transition: .6s transform, .6s width;
+                }
+            }
+
+            .tab-content {
+
+                width: 300%;
+                overflow: hidden;
+
+                ul {
+                    width: 33.33%;
+                    float: left;
+                    &:extend(.clearfix all);
+
+                    li {
+                        float: left;
+                        box-sizing: border-box;
+                        width: 506/@rem;
+                        padding: 5/@rem;
+                        margin: 8/@rem;
+                        color: #000;
+                        font-size: 40/@rem;
+                        background-color: #efefef;
+    
+                        img {
+                            width: 100%;
+                            border-radius: 8/@rem;
                         }
+
+                        p {
+                            overflow: hidden;
+                            height: 100/@rem;
+                            color: #000;
+                        }
+
+                        .tab-meta {
+                            
+                            font-size: 34/@rem;
+
+                            .left {
+                                float: left;
+                                margin-right: 120/@rem;
+
+                                span {
+                                    vertical-align: bottom;
+                                }
+
+                                span:nth-child(1) {
+                                    display: inline-block;
+                                    width: 0.5rem;
+                                    height: 0.5rem;
+                                    margin-right: 0.2rem;
+                                    background: url(../img/ice.png) no-repeat;
+                                }
+                            }
+                            .right {
+                                float: left;
+
+                                span {
+                                    vertical-align: bottom;
+                                }
+
+                                span:nth-child(1) {
+                                    display: inline-block;
+                                    width: 0.5rem;
+                                    height: 0.5rem;
+                                    margin-right: 0.2rem;
+                                    background: url(../img/ice.png) no-repeat;
+                                    background-position: 0 -0.8rem;
+                                }
+                            }
+                        }
+    
                     }
                 }
+
+                .tab-loading {
+                    height: 20rem;
+                    background: #fff url(../img/loading.gif) no-repeat;
+                    background-position: center;
+                    opacity: 0;
+                    transition: .8s opacity;
+                }
+
             }
         }
     }
-
-/*
-	
-	导航元素: 高:129
-			  左右内边距:38			  
-*/
 }
 
