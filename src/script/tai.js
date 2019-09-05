@@ -11,6 +11,8 @@ import '../css/carousel.less'
 import DragNav from './drag-nav'
 import Carousel from './carousel'
 import damu from './transform'
+import vmove from './v-move'
+
 
 let doc = document
 let docEl = document.documentElement
@@ -25,8 +27,12 @@ doc.addEventListener('touchstart', (e) => {
 
 
 var styleNode = doc.createElement('style')
-styleNode.innerHTML = 'html {font-size: ' + (w/16) + 'px!important;'
+var fontSize = w / 16
+styleNode.innerHTML = 'html {font-size: ' + fontSize + 'px!important;'
 doc.head.appendChild(styleNode)
+
+
+window.onload = () => {
 
 
 // head
@@ -108,8 +114,8 @@ let jump = (content, dis) => {
         }
         damu.css(content.gMask, 'translateX', content.aNodes[content.now].offsetLeft)
 
-        content.style.transition = '.8s transform'
         var targetx = dis.x > 0 ? 0 : -2*tabWidth
+        content.style.transition = '.8s transform'
         damu.css(content, 'translateX', targetx)
 
         content.addEventListener('transitionend', fn)
@@ -208,4 +214,49 @@ var contentNodes = doc.querySelectorAll('.tab-wrap .tab-content')
 for (var x = 0; x < contentNodes.length; x++) {
     contentNodes[x].now = 0
     move(contentNodes[x])
+}
+
+ 
+/*
+    外部的业务逻辑
+
+    start   在坚向滑屏一开始时触发
+    move    在坚向滑屏时一直触发
+    end     在坚向滑屏结束时触发
+*/
+
+var bar = doc.querySelector('.scroll-bar')
+var head = doc.querySelector('.head')
+var content = doc.querySelector('.content')
+var contentWrap = doc.querySelector('.content .content-wrap')
+/*
+    bar / vh = vh / ch
+    => bar = vh*vh / ch
+*/
+bar.style.height = h * h / (contentWrap.offsetHeight + head.offsetHeight) + 'px'
+
+/*
+    bx / bmx = cx / cmx
+    => bx = bmx * cx / cmx
+    => bx = (document.documentelement.offsetHeight - bar.offsetHeight) * cx/ (content.offsetHeight - document.documentelement.offsetHeight)
+*/
+var callBack = {
+    start: function() {
+        bar.style.opacity = 1
+    },
+    move: function() {
+        var scale = damu.css(this, 'translateY') / (contentWrap.offsetHeight - content.offsetHeight)
+        damu.css(bar, 'translateY', -(h-bar.offsetHeight) * scale)
+    },
+    end: function() {
+        bar.style.opacity = 0
+    }
+}
+
+vmove(content, contentWrap, callBack)
+
+
+
+
+
 }
