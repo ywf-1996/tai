@@ -35,7 +35,7 @@ function Carousel(imgUrls) {
         setTimeout(function() {
             // debugger
             carouselWrap.style.height = imgNode.offsetHeight + 'px'
-        }, 100)
+        }, 200)
 
         //
         

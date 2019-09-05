@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			#test{
+                position: absolute;
+                top: 0;
+                left: 0;
+                /* 以上为添加 */
+				width: 100px;
+				height: 100px;
+				background: pink;
+			}
+			
+		</style>
+	</head>
+	<body>
+		<div id="test"></div>
+	</body>
+	<script type="text/javascript">
+		var Tween = {
+			Linear: function(t,b,c,d){ return c*t/d + b; },
+			back: function(t,b,c,d,s){
+	            if (s == undefined) s = 1.70158;
+	            return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
+        	}
+		}
+		
+		/*
+		t:当前是哪一次
+		b:初始位置
+		c:最终位置与初始位置之间的差值
+		d:总次数
+		*/
+		var i=0;
+		var clear = setInterval(function(){
+			i++;
+			if(i>100){
+				clearInterval(clear);
+            }
+            var x = Tween.back(i,0,1000,100)
+            test.style.left = x + 'px'
+            
+			// damu.css(test,"translateX",Tween.Linear(i,0,1000,100))
+		},1000/60)
+		
+	</script>
+</html>

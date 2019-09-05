@@ -12,7 +12,8 @@ html, body {
 
 
 #wrap {
-    overflow: auto;
+    overflow: hidden;
+    position: relative;
     height: 100%;
     background-color: #eee;
  
@@ -23,6 +24,7 @@ html, body {
         width: 100%;
         height: 270/@rem;
         background-color: #232323;
+        z-index: 666;
 
         .head-top {
             height: 135/@rem;
@@ -148,7 +150,7 @@ html, body {
     }
  
     .content {
-        overflow: auto;
+        overflow: hidden;
         position: absolute;
         top: 270/@rem;
         right: 0;
@@ -156,10 +158,10 @@ html, body {
         left: 0;
         
         .tab-wrap {
+            overflow: hidden;
             width: 1046/@rem;
             margin: 0 auto;
             background-color: #fff;
-            overflow: hidden;
 
             .tab-head {
                 height: 135/@rem;
@@ -283,6 +285,19 @@ html, body {
 
             }
         }
+    }
+
+    .scroll-bar {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 4px;
+        height: 0;
+        border-radius: 4px;
+        background-color: #f00;
+        transition: 3s opacity;
+        opacity: 0;
+        z-index: 999;
     }
 }
 
